@@ -37,7 +37,10 @@ const userSchema = new mongoose.Schema({
             type: String,
             required: true,
         }
-    }]
+    }],
+    avatar: {
+        type: Buffer
+    }
 })
 
 userSchema.virtual('tasks', {
@@ -46,9 +49,20 @@ userSchema.virtual('tasks', {
     foreignField: 'owner'
 })
 
+userSchema.methods.toJSON = function() {
+    const user = this
+    const userObj = user.toObject()
+
+    delete userObj.password
+    delete userObj.tokens
+    delete userObj.avatar
+
+    return userObj
+}
+
 userSchema.methods.generateToken = async function () {
     const user = this
-    const token = await jwt.sign({_id: user._id}, 'mysecret', {expiresIn: '7days'})
+    const token = await jwt.sign({_id: user._id}, process.env.JWT_SECRET, {expiresIn: '7days'})
     return token
 }
 

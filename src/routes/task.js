@@ -8,12 +8,12 @@ const router = express.Router()
 router.post('/', auth, async (req, res) => {
     // console.log(req.body)
     try {
-        console.log(req.user)
+        // console.log(req.user)
         const task = new Task({
             ...req.body,
             owner: req.user._id
         })
-        console.log(task);
+        // console.log(task);
         
         await task.save()
         res.status(201).send(task)
